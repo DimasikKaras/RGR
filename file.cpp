@@ -15,12 +15,10 @@ vector<byte> readFile() {
     char isRoot;
     const string dataDir = "data";
 
-    // Бесконечный цикл для повторного ввода при ошибках
     while (true) {
         try {
-            // Цикл проверки корректного ввода y/n
             while (true) {
-                cout << "Файл находится в корневой папке? (y/n): ";
+                cout << "Файл находится в директории data.? (y/n): ";
                 cin >> isRoot;
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
@@ -34,10 +32,9 @@ vector<byte> readFile() {
             if (isRoot == 'n') {
                 cout << "Введите путь к файлу: ";
             } else {
-                // Проверяем существование каталога data
                 if (!filesystem::exists(dataDir)) {
                     cerr << "Ошибка: каталог '" << dataDir << "' не существует!" << endl;
-                    continue;  // Возвращаемся к началу цикла
+                    continue; 
                 }
                 cout << "Введите название файла (из каталога " << dataDir << "): ";
             }
@@ -47,7 +44,7 @@ vector<byte> readFile() {
                 throw runtime_error("Имя файла не может быть пустым!");
             }
 
-            // Формируем полный путь
+            // Формирование полного пути
             string fullPath = (isRoot == 'y') ? (dataDir + "/" + filename) : filename;
 
             ifstream file(fullPath, ios::binary | ios::ate);
@@ -93,7 +90,7 @@ void writeBytesToFile(const vector<byte>& data) {
                 throw runtime_error("Имя файла не может быть пустым!");
             }
 
-            // Создаем папку data, если её нет
+            // Создаем директорию data, если её нет
             if (!filesystem::exists(dataDir)) {
                 if (!filesystem::create_directory(dataDir)) {
                     throw runtime_error("Не удалось создать директорию '" + dataDir + "'");
@@ -104,16 +101,13 @@ void writeBytesToFile(const vector<byte>& data) {
             // Формируем полный путь к файлу
             string fullPath = dataDir + "/" + filename;
 
-            // Открываем файл в бинарном режиме
             ofstream file(fullPath, ios::binary);
             if (!file.is_open()) {
                 throw runtime_error("Не удалось создать файл '" + fullPath + "'");
             }
 
-            // Записываем данные
             file.write(reinterpret_cast<const char*>(data.data()), data.size());
 
-            // Проверяем ошибки записи
             if (!file.good()) {
                 file.close();
                 throw runtime_error("Ошибка записи в файл '" + fullPath + "'");
@@ -182,9 +176,8 @@ string readHexKeyFromFile() {
 
     while (true) {
         try {
-            // Цикл проверки корректного ввода y/n
             while (true) {
-                cout << "Файл с ключом находится в корневой папке? (y/n): ";
+                cout << "Файл с ключом находится в директории data/? (y/n): ";
                 cin >> isRoot;
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
@@ -219,7 +212,6 @@ string readHexKeyFromFile() {
                 throw runtime_error("Не удалось открыть файл '" + fullPath + "'");
             }
 
-            // Читаем hex-ключ из файла
             string hexKey;
             getline(file, hexKey);
             file.close();

@@ -28,7 +28,7 @@ typedef void (*twoFishDecryptStringFunction)(const string&, const vector<std::by
 bool checkXorLib(){
 	void* xorLib = dlopen("./libs/xorLib.so", RTLD_LAZY);
 	if (!xorLib) {
-		cerr << "Ошибка загрузки xorLib.so: " << dlerror << endl;
+		//cerr << "Ошибка загрузки xorLib.so: " << dlerror << endl;
 		return false;
 	}
 
@@ -58,7 +58,7 @@ bool checkXorLib(){
 bool checkBeaufortLib(){
 	void* beaufortLib = dlopen("./libs/beaufortLib.so", RTLD_LAZY);
 	if (!beaufortLib) {
-		cerr << "Ошибка загрузки beaufortLib.so: " << dlerror << endl;
+		//cerr << "Ошибка загрузки beaufortLib.so: " << dlerror << endl;
 		return false;
 	}
 	
@@ -87,7 +87,7 @@ bool checkBeaufortLib(){
 bool checkTwoFishLib(){
 	void* twoFishLib = dlopen("./libs/twoFishLib.so", RTLD_LAZY);
 	if (!twoFishLib) {
-		cerr << "Ошибка загрузки twoFishLib.so: " << dlerror << endl;
+		//cerr << "Ошибка загрузки twoFishLib.so: " << dlerror << endl;
 		return false;
 	}
 	
@@ -133,6 +133,7 @@ enum class Script {
     ALLProcessText,
     EncryptTextOnly,
     DecryptTextOnly,
+    INVALIDE
 };
 
 Script Action(const int& selection) {
@@ -144,16 +145,18 @@ Script Action(const int& selection) {
         case 4: return Script::ALLProcessText;
         case 5: return Script::EncryptTextOnly;
         case 6: return Script::DecryptTextOnly;
+        default: return Script::INVALIDE;
     }
 }
 
 void showMainMenu() {
+
     cout << "\n┌──────────────────────────────┐\n";
     cout << "│     АЛГОРИТМЫ ШИФРОВАНИЯ     │\n";
     cout << "├──────────────────────────────┤\n";
-    cout << "├ 1. XOR                       ┤\n";
-    cout << "├ 2. Бофор                     ┤\n";
-    cout << "├ 3. TWOFISH                   ┤\n";
+    cout << "│ 1. XOR" << (checkXorLib() ? "                       │" : " (недоступно)          │") << "\n";
+    cout << "│ 2. Бофор" << (checkBeaufortLib() ?  "                     │" : " (недоступно)        │") << "\n";
+    cout << "│ 3. TWOFISH" << (checkTwoFishLib() ? "                   │" : " (недоступно)      │") << "\n";
     cout << "│                              │\n";
     cout << "│ 0. Выход                     │\n";
     cout << "└──────────────────────────────┘\n";
@@ -161,8 +164,15 @@ void showMainMenu() {
 }
 
 void showScenarioMenu(const string& crypt) {
+    string title = "СЦЕНАРИИ ШИФРОВАНИЯ " + crypt;
+
+    if (title.length() > 54) {
+        title = title.substr(0, 54);
+    }
+    title += string(54 - title.length(), ' ');
+
     cout << "\n┌────────────────────────────────────────────────────────┐\n";
-    cout << "│                 СЦЕНАРИИ ШИФРОВАНИЯ " << crypt << "                │\n";
+    cout << "│              " << title << "      │\n";
     cout << "├────────────────────────────┬───────────────────────────┤\n";
     cout << "│         Для файлов         │        Для консоли        │\n";
     cout << "├────────────────────────────┼───────────────────────────┤\n";
@@ -237,7 +247,7 @@ int main() {
                                     xorDecryptFile(encrypt, key, decrypt);
                                     cout << "Файл успешно дешифрован, записываем дешифрованный файл..." << endl;
                                     writeBytesToFile(decrypt);
-                                    cout << "Программа завершила работу" << endl;
+                                    cout << "Сценарий завершён" << endl;
                                     break;
                                 }
                                 case Script::EncryptFileOnly: {
@@ -252,7 +262,7 @@ int main() {
                                     cout << "Теперь запишем ключ..." << endl;
                                     auto hexKey = bytesToHex(key);
                                     saveKeyToFile(hexKey);
-                                    cout << "Программа завершила работу" << endl;
+                                    cout << "Сценарий завершён" << endl;
                                     break;
                                 }
                                 case Script::DecryptFileOnly: {
@@ -265,7 +275,7 @@ int main() {
                                     xorDecryptFile(encryptFile, key, decrypt);
                                     cout << "Файл успешно дешифрован, записываем дешифрованный файл..." << endl;
                                     writeBytesToFile(decrypt);
-                                    cout << "Программа завершила работу" << endl;
+                                    cout << "Сценарий завершён" << endl;
                                     break;
                                 }
                                 case Script::ALLProcessText: {
@@ -288,7 +298,7 @@ int main() {
                                     } else {
                                         cout << "Ошибка: дешифрованный текст не совпадает с исходным!" << endl;
                                     }
-                                    cout << "Программа завершила работу" << endl;
+                                    cout << "Сценарий завершён" << endl;
                                     break;
                                 }
                                 case Script::EncryptTextOnly: {
@@ -303,7 +313,7 @@ int main() {
                                     cout << "Зашифрованный текст в hex: " << toHex(encrypt) << endl;
                                     auto hexKey = bytesToHex(key);
                                     cout << "Ключ, который использовался при шифровки текста в hex: " << hexKey << endl;
-                                    cout << "Программа завершила работу" << endl;
+                                    cout << "Сценарий завершён" << endl;
                                     break;
                                 }
                                 case Script::DecryptTextOnly: {
@@ -325,7 +335,7 @@ int main() {
                                         cout << "Дешифровка..." << endl;
                                         xorDecryptString(cryptText, key, deCrypt);
                                         cout << "Дешифрованный текст: " << deCrypt << endl;
-                                        cout << "Программа завершила работу" << endl;
+                                        cout << "Сценарий завершён" << endl;
                                     } catch (const invalid_argument& e) {
                                         cout << "Ошибка входных данных: " << e.what() << endl;
                                     } catch (const exception& e) {
@@ -390,7 +400,7 @@ int main() {
                                     beaufortDecryptFile(encrypt, key, decrypt);
                                     cout << "Файл успешно дешифрован, записываем дешифрованный файл..." << endl;
                                     writeBytesToFile(decrypt);
-                                    cout << "Программа завершила работу" << endl;
+                                    cout << "Сценарий завершён" << endl;
                                     break;
                                 }
                                 case Script::EncryptFileOnly: {
@@ -405,7 +415,7 @@ int main() {
                                     cout << "Теперь запишем ключ..." << endl;
                                     auto hexKey = bytesToHex(key);
                                     saveKeyToFile(hexKey);
-                                    cout << "Программа завершила работу" << endl;
+                                    cout << "Сценарий завершён" << endl;
                                     break;
                                 }
                                 case Script::DecryptFileOnly: {
@@ -418,7 +428,7 @@ int main() {
                                     beaufortDecryptFile(encryptFile, key, decrypt);
                                     cout << "Файл успешно дешифрован, записываем дешифрованный файл..." << endl;
                                     writeBytesToFile(decrypt);
-                                    cout << "Программа завершила работу" << endl;
+                                    cout << "Сценарий завершён" << endl;
                                     break;
                                 }
                                 case Script::ALLProcessText: {
@@ -441,7 +451,7 @@ int main() {
                                     } else {
                                         cout << "Ошибка: дешифрованный текст не совпадает с исходным!" << endl;
                                     }
-                                    cout << "Программа завершила работу" << endl;
+                                    cout << "Сценарий завершён" << endl;
                                     break;
                                 }
                                 case Script::EncryptTextOnly: {
@@ -456,7 +466,7 @@ int main() {
                                     cout << "Зашифрованный текст в hex: " << toHex(encrypt) << endl;
                                     auto hexKey = bytesToHex(key);
                                     cout << "Ключ, который использовался при шифровки текста в hex: " << hexKey << endl;
-                                    cout << "Программа завершила работу" << endl;
+                                    cout << "Сценарий завершён" << endl;
                                     break;
                                 }
                                 case Script::DecryptTextOnly: {
@@ -478,7 +488,7 @@ int main() {
                                         cout << "Дешифровка..." << endl;
                                         beaufortDecryptString(cryptText, key, deCrypt);
                                         cout << "Дешифрованный текст: " << deCrypt << endl;
-                                        cout << "Программа завершила работу" << endl;
+                                        cout << "Сценарий завершён" << endl;
                                     } catch (const invalid_argument& e) {
                                         cout << "Ошибка входных данных: " << e.what() << endl;
                                     } catch (const exception& e) {
@@ -559,7 +569,7 @@ int main() {
                                     } else {
                                         cout << "Ошибка: дешифрованный текст не совпадает с исходным!" << endl;
                                     }
-                                    cout << "Программа завершила работу" << endl;
+                                    cout << "Сценарий завершён" << endl;
                                     break;
                                 }
                                 case Script::EncryptFileOnly: {
@@ -579,7 +589,7 @@ int main() {
                                     cout << "Теперь запишем ключ..." << endl;
                                     auto hexKey = bytesToHex(key);
                                     saveKeyToFile(hexKey);
-                                    cout << "Программа завершила работу" << endl;
+                                    cout << "Сценарий завершён" << endl;
                                     break;
                                 }
                                 case Script::DecryptFileOnly: {
@@ -597,7 +607,7 @@ int main() {
                                     twoFishDecryptFile(ciphertext, key, iv, decrypt);
                                     cout << "Файл успешно дешифрован, записываем дешифрованный файл..." << endl;
                                     writeBytesToFile(decrypt);
-                                    cout << "Программа завершила работу" << endl;
+                                    cout << "Сценарий завершён" << endl;
                                     break;
                                 }
                                 case Script::ALLProcessText: {
@@ -622,7 +632,7 @@ int main() {
                                     } else {
                                         cout << "Ошибка: дешифрованный текст не совпадает с исходным!" << endl;
                                     }
-                                    cout << "Программа завершила работу" << endl;
+                                    cout << "Сценарий завершён" << endl;
                                     break;
                                 }
                                 case Script::EncryptTextOnly: {
@@ -640,7 +650,7 @@ int main() {
                                     auto hexIV = bytesToHex(iv);
                                     cout << "Ключ, который использовался при шифровании текста в hex: " << hexKey << endl;
                                     cout << "IV, который использовался при шифровании текста в hex: " << hexIV << endl;
-                                    cout << "Программа завершила работу" << endl;
+                                    cout << "Сценарий завершён" << endl;
                                     break;
                                 }
                                 case Script::DecryptTextOnly: {
@@ -668,7 +678,7 @@ int main() {
                                         cout << "Дешифровка..." << endl;
                                         twoFishDecryptString(cryptText, key, iv, deCrypt);
                                         cout << "Дешифрованный текст: " << deCrypt << endl;
-                                        cout << "Программа завершила работу" << endl;
+                                        cout << "Сценарий завершён" << endl;
                                     } catch (const invalid_argument& e) {
                                         cout << "Ошибка входных данных: " << e.what() << endl;
                                     } catch (const exception& e) {

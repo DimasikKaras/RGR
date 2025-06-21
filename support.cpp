@@ -1,8 +1,9 @@
 #include <vector>
 #include <random>
+#include <stdexcept>
+
 #include "support.h"
 
-#include <stdexcept>
 using namespace std;
 
 vector<byte> generateKey() {
