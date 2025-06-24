@@ -294,7 +294,7 @@ extern "C"{
 		vector<uint32_t> subkeys(40);
 		vector<vector<uint32_t>> s;
 		keySchedule(key, subkeys, s);
-		result = text; // Copy input to result
+		result = text; 
 		encryptCfb(result, subkeys, s, iv);
 	}
 
@@ -302,7 +302,7 @@ extern "C"{
 		vector<uint32_t> subkeys(40);
 		vector<vector<uint32_t>> s;
 		keySchedule(key, subkeys, s);
-		result = text; // Copy input to result
+		result = text; 
 		decryptCfb(result, subkeys, s, iv);
 	}
 
