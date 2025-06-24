@@ -155,8 +155,8 @@ void showMainMenu() {
     cout << "│     АЛГОРИТМЫ ШИФРОВАНИЯ     │\n";
     cout << "├──────────────────────────────┤\n";
     cout << "│ 1. XOR" << (checkXorLib() ? "                       │" : " (недоступно)          │") << "\n";
-    cout << "│ 2. Бофор" << (checkBeaufortLib() ?  "                     │" : " (недоступно)        │") << "\n";
-    cout << "│ 3. TWOFISH" << (checkTwoFishLib() ? "                   │" : " (недоступно)      │") << "\n";
+    cout << "│ 2. Бофор" << (checkBeaufortLib() ?  "                     │" : " (недоступно)             │") << "\n";
+    cout << "│ 3. TWOFISH [CFB]" << (checkTwoFishLib() ? "             │" : " (недоступно)│") << "\n";
     cout << "│                              │\n";
     cout << "│ 0. Выход                     │\n";
     cout << "└──────────────────────────────┘\n";
