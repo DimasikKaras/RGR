@@ -18,7 +18,7 @@ vector<byte> readFile() {
     while (true) {
         try {
             while (true) {
-                cout << "Файл находится в директории data.? (y/n): ";
+                cout << "Файл находится в директории data/? (y/n): ";
                 cin >> isRoot;
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
