@@ -26,7 +26,7 @@ string beaufortCipher(const string& text, const vector<byte>& key) {
     const int alphabetSize = 256;
 
     for (size_t i = 0; i < text.size(); ++i) {
-        unsigned char text_char = static_cast<int>(text[i]) + alphabetSize;
+        unsigned char text_char = static_cast<int>(text[i]);
         unsigned char key_char = static_cast<int>(key[i % key.size()]);
 
         // Применяем формулу Бофора
