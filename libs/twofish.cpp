@@ -149,7 +149,7 @@ void generateSBoxes(vector<uint32_t>& k, vector<vector<uint32_t>>& s, const vect
     for (int i = 0; i < 4; ++i) {
         S[i] = byte{0};
         for (int j = 0; j < 8; ++j) {
-            int keyIndex = (i * 8 + j) % key.size();
+            int keyIndex = j % key.size();
             S[i] ^= RSMultiply(RS[i][j], K[keyIndex]);
         }
     }
